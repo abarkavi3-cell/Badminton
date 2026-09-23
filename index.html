@@ -122,7 +122,7 @@
 
         .brand-logo {
             font-weight: 800;
-            font-size: 1.4rem; /* Bolder and larger as requested */
+            font-size: 1.4rem;
             letter-spacing: -0.03em;
             color: var(--text-main);
             display: flex;
@@ -847,8 +847,14 @@
                     </div>
 
                     <!-- Tab 4: Court Management -->
-                    <div id="admin-tab-courts-mgmt" class="tab-content glass-card">
-                        <h3>🏟️ Court Availability Controls</h3>
+                    <div id="admin-tab-courts-mgmt" class="tab-content glass-card" style="max-width: 600px;">
+                        <h3>🏟️ Court Availability & Creation Controls</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">Add new courts or modify existing court statuses.</p>
+                        
+                        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+                            <button class="btn-primary" onclick="addNewCourt()" style="width: auto;">➕ Add New Court</button>
+                        </div>
+
                         <div id="admin-courts-list"></div>
                     </div>
 
@@ -1049,6 +1055,15 @@
             2: { status: 'Free', players: [], mode: '' }
         };
 
+        // --- ADD NEW COURT FEATURE ---
+        function addNewCourt() {
+            const newId = Object.keys(courts).length > 0 ? Math.max(...Object.keys(courts).map(Number)) + 1 : 1;
+            courts[newId] = { status: 'Free', players: [], mode: '' };
+            alert(`Court ${newId} added successfully!`);
+            renderCourts();
+            renderAdminSuite();
+        }
+
         // --- DAILY REFRESH CHECK (AUTOMATIC RESET EVERY 24H) ---
         function checkDailyReset() {
             const lastResetDate = localStorage.getItem('nm_last_reset_date');
@@ -1077,10 +1092,9 @@
                     p.Status = 'Waiting';
                     p.CheckedIn = false;
                 });
-                courts = {
-                    1: { status: 'Free', players: [], mode: '' },
-                    2: { status: 'Free', players: [], mode: '' }
-                };
+                Object.keys(courts).forEach(cid => {
+                    courts[cid] = { status: 'Free', players: [], mode: '' };
+                });
                 localStorage.setItem('nm_last_reset_date', new Date().toDateString());
                 alert("Daily reset completed successfully!");
                 renderCourts();
@@ -1620,10 +1634,13 @@
                 courtsList.innerHTML += `
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid var(--card-border); padding-bottom: 8px; gap: 10px;">
                         <span style="font-size: 0.88rem;"><strong>Court ${cid}</strong> — Status: <code style="color: var(--text-muted);">${cinfo.status}</code></span>
-                        <select onchange="changeCourtStatus(${cid}, this.value)" style="width: 130px; margin-bottom: 0; font-size: 0.85rem;">
-                            <option value="Free" ${cinfo.status==='Free'?'selected':''}>Free</option>
-                            <option value="Blocked" ${cinfo.status==='Blocked'?'selected':''}>Blocked</option>
-                        </select>
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <select onchange="changeCourtStatus(${cid}, this.value)" style="width: 120px; margin-bottom: 0; font-size: 0.85rem;">
+                                <option value="Free" ${cinfo.status==='Free'?'selected':''}>Free</option>
+                                <option value="Blocked" ${cinfo.status==='Blocked'?'selected':''}>Blocked</option>
+                            </select>
+                            <button class="btn-sm" onclick="removeCourt(${cid})" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border-color: rgba(244, 63, 94, 0.3);">🗑️</button>
+                        </div>
                     </div>
                 `;
             }
@@ -1659,6 +1676,18 @@
                     </div>
                 `;
             });
+        }
+
+        function removeCourt(cid) {
+            if (courts[cid].status === 'Playing') {
+                alert("Cannot remove a court while a match is currently in play.");
+                return;
+            }
+            if (confirm(`Are you sure you want to delete Court ${cid}?`)) {
+                delete courts[cid];
+                renderCourts();
+                renderAdminSuite();
+            }
         }
 
         function registerPlayer() {
