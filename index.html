@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Newcastle Medicals Badminton Club</title>
+    <!-- Include Supabase JS SDK CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             /* DARK MODE (DEFAULT) */
@@ -120,7 +122,7 @@
 
         .brand-logo {
             font-weight: 800;
-            font-size: 1.4rem; /* Made larger and bolder as requested */
+            font-size: 1.4rem; /* Bolder and larger as requested */
             letter-spacing: -0.03em;
             color: var(--text-main);
             display: flex;
@@ -1016,6 +1018,11 @@
 
     <!-- JAVASCRIPT STATE & LOGIC -->
     <script>
+        // --- SUPABASE CLIENT INITIALIZATION ---
+        const SUPABASE_URL = "https://ngurpsjxnyygwydnmeof.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ndXJwc2p4bnl5Z3d5ZG5tZW9mIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxNzY2MDQsImV4cCI6MjEwNTc1MjYwNH0.VxuXbwjq026aJSCm-D4Qk18saYOSvSCp7pEwvMCdKIM";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         let adminLoggedIn = false;
         let adminPassword = "0426";
         let selectedCourtId = null;
@@ -1048,7 +1055,6 @@
             const todayStr = new Date().toDateString();
             
             if (lastResetDate !== todayStr) {
-                // Perform daily data reset
                 players.forEach(p => {
                     p.GamesPlayed = 0;
                     p.Paid = false;
