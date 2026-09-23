@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Newcastle Medicals Badminton Club</title>
+    <style>
+        :root {
+            /* DARK MODE (DEFAULT) */
+            --bg-gradient-start: #3b1d0c;
+            --bg-gradient-end: #140803;
+            --app-bg-1: rgba(60, 26, 10, 0.85);
+            --app-bg-2: rgba(20, 8, 3, 0.92);
+            --card-glass: rgba(255, 140, 60, 0.04);
+            --card-border: rgba(255, 180, 100, 0.12);
+            --accent-orange: #f97316;
+            --accent-amber: #fbbf24;
+            --text-main: #fff7ed;
+            --text-muted: #fed7aa;
+            --pill-bg: rgba(40, 18, 8, 0.7);
+            --modal-bg-1: rgba(60, 26, 10, 0.95);
+            --modal-bg-2: rgba(20, 8, 3, 0.95);
+            --overlay-bg: rgba(10, 4, 1, 0.85);
+            --tile-bg: rgba(20, 8, 3, 0.6);
+            --table-th-bg: rgba(255, 255, 255, 0.02);
+            --table-hover: rgba(255, 255, 255, 0.02);
+            --dropdown-bg-1: rgba(50, 22, 8, 0.98);
+            --dropdown-bg-2: rgba(20, 8, 3, 0.98);
+            --wallpaper-opacity: 0.88;
+            --radius-xl: 28px;
+            --radius-lg: 18px;
+            --radius-pill: 9999px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body.light-mode {
+            /* LIGHT MODE PALETTE */
+            --bg-gradient-start: #fed7aa;
+            --bg-gradient-end: #ffedd5;
+            --app-bg-1: rgba(255, 255, 255, 0.88);
+            --app-bg-2: rgba(255, 247, 237, 0.94);
+            --card-glass: rgba(249, 115, 22, 0.03);
+            --card-border: rgba(234, 88, 12, 0.15);
+            --accent-orange: #ea580c;
+            --accent-amber: #d97706;
+            --text-main: #431407;
+            --text-muted: #9a3412;
+            --pill-bg: rgba(255, 237, 213, 0.8);
+            --modal-bg-1: rgba(255, 255, 255, 0.98);
+            --modal-bg-2: rgba(255, 247, 237, 0.98);
+            --overlay-bg: rgba(67, 20, 7, 0.45);
+            --tile-bg: rgba(255, 255, 255, 0.7);
+            --table-th-bg: rgba(234, 88, 12, 0.05);
+            --table-hover: rgba(249, 115, 22, 0.05);
+            --dropdown-bg-1: rgba(255, 255, 255, 0.98);
+            --dropdown-bg-2: rgba(255, 247, 237, 0.98);
+            --wallpaper-opacity: 0.25;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            /* Lin Dan action wallpaper with dynamic contrast overlay */
+            background: linear-gradient(135deg, rgba(20, 8, 3, var(--wallpaper-opacity)), rgba(8, 3, 1, var(--wallpaper-opacity))), 
+                        url('https://c4.wallpaperflare.com/wallpaper/705/921/204/lin-dan-badminton-sport-olympic-wallpaper-preview.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            position: relative;
+            transition: background 0.4s ease, color 0.4s ease;
+        }
+
+        /* Atmospheric lighting radial overlay */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.12) 0%, transparent 45%),
+                              radial-gradient(circle at 15% 85%, rgba(251, 191, 36, 0.06) 0%, transparent 45%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* --- MAC-STYLE APP FRAME CONTAINER --- */
+        .app-frame {
+            width: 100%;
+            max-width: 1320px;
+            background: linear-gradient(145deg, var(--app-bg-1), var(--app-bg-2));
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 200, 150, 0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(20px);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        /* --- FLOATING PILL NAVBAR --- */
+        header {
+            padding: 24px 36px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand-logo {
+            font-weight: 700;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .pill-nav {
+            background: var(--pill-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 6px;
+            border-radius: var(--radius-pill);
+            display: flex;
+            gap: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .nav-pill-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 10px 22px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .nav-pill-btn:hover {
+            color: var(--text-main);
+        }
+
+        .nav-pill-btn.active {
+            background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+            color: #ffffff;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            background: var(--pill-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .icon-btn:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        /* --- VIEW CONTAINER --- */
+        main {
+            padding: 10px 36px 40px 36px;
+            flex: 1;
+        }
+
+        .page-view { display: none; }
+        .page-view.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- DASHBOARD GRIDS & GLASS CARDS --- */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 24px;
+        }
+
+        .glass-card {
+            background: var(--card-glass);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+
+        .glass-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 18px;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-main);
+        }
+
+        /* --- COURT ARENAS --- */
+        .court-arena {
+            background: radial-gradient(circle at center, #065f46 0%, #022c22 100%);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            border-radius: var(--radius-lg);
+            height: 180px;
+            position: relative;
+            box-shadow: inset 0 0 30px rgba(0,0,0,0.7), 0 8px 25px rgba(0,0,0,0.2);
+            margin-bottom: 14px;
+            overflow: hidden;
+        }
+
+        .court-inner-border {
+            position: absolute;
+            top: 14px; bottom: 14px; left: 18px; right: 18px;
+            border: 2px solid rgba(255, 255, 255, 0.85);
+            pointer-events: none;
+            border-radius: 6px;
+        }
+
+        .court-net {
+            position: absolute;
+            top: 14px; bottom: 14px; left: 50%;
+            width: 2px;
+            border-left: 2px dashed rgba(255, 255, 255, 0.85);
+            transform: translateX(-50%);
+            z-index: 2;
+        }
+
+        .player-pill-tag {
+            position: absolute;
+            width: 32%;
+            background: rgba(20, 8, 3, 0.85);
+            backdrop-filter: blur(10px);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            z-index: 3;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            color: #fff7ed;
+        }
+
+        .player-pill-tag.blue-1 { top: 20px; left: 24px; border: 1px solid rgba(59, 130, 246, 0.6); }
+        .player-pill-tag.blue-2 { bottom: 20px; left: 24px; border: 1px solid rgba(59, 130, 246, 0.6); }
+        .player-pill-tag.orange-1 { top: 20px; right: 24px; border: 1px solid rgba(249, 115, 22, 0.6); text-align: right; }
+        .player-pill-tag.orange-2 { bottom: 20px; right: 24px; border: 1px solid rgba(249, 115, 22, 0.6); text-align: right; }
+
+        .court-blocked {
+            background: var(--card-glass);
+            border: 2px dashed var(--card-border);
+            border-radius: var(--radius-lg);
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 14px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .court-available {
+            background: rgba(16, 185, 129, 0.05);
+            border: 2px dashed rgba(16, 185, 129, 0.3);
+            border-radius: var(--radius-lg);
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 14px;
+            color: #10b981;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .court-available:hover {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.6);
+        }
+
+        /* --- CUSTOM MODAL POPUPS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay-bg);
+            backdrop-filter: blur(8px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: background 0.4s ease;
+        }
+        .modal-card {
+            background: linear-gradient(145deg, var(--modal-bg-1), var(--modal-bg-2));
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            width: 100%;
+            max-width: 560px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            text-align: center;
+            color: var(--text-main);
+            transition: background 0.4s ease, border-color 0.4s ease;
+        }
+        .modal-card h2 {
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            color: var(--text-main);
+        }
+        .modal-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+        }
+        .modal-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        /* --- PLAYER TILES GRID --- */
+        .tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 4px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .player-tile {
+            background: var(--tile-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .player-tile:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.08);
+        }
+        .player-tile.selected {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.2), rgba(234, 88, 12, 0.2));
+            border-color: var(--accent-orange);
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
+        }
+        .tile-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+        .tile-meta {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .checkin-tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 4px;
+        }
+        .checkin-tile {
+            background: var(--tile-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .checkin-tile:hover {
+            border-color: var(--accent-orange);
+        }
+        .checkin-tile.checked-in {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        /* --- PAYMENT AUDIT TILES GRID --- */
+        .audit-tiles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 14px;
+            margin-top: 12px;
+        }
+        .audit-tile {
+            background: var(--tile-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .audit-tile:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.05);
+        }
+        .audit-tile.paid {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        /* --- TOUCH-FRIENDLY MULTI-SELECT DROPDOWN WIDGET --- */
+        .dropdown-container {
+            position: relative;
+            margin-bottom: 12px;
+        }
+        .dropdown-toggle-btn {
+            width: 100%;
+            background: var(--tile-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 10px 14px;
+            border-radius: var(--radius-lg);
+            font-size: 0.88rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+        }
+        .dropdown-toggle-btn:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.08);
+        }
+        .dropdown-panel {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 100%;
+            background: linear-gradient(145deg, var(--dropdown-bg-1), var(--dropdown-bg-2));
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            padding: 12px;
+            display: none;
+            z-index: 50;
+            backdrop-filter: blur(12px);
+        }
+        .dropdown-panel.open {
+            display: block;
+            animation: fadeIn 0.2s ease;
+        }
+        .dropdown-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.88rem;
+            color: var(--text-main);
+            transition: var(--transition);
+        }
+        .dropdown-option:hover {
+            background: rgba(249, 115, 22, 0.15);
+        }
+        .dropdown-option input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent-orange);
+            margin-bottom: 0;
+            cursor: pointer;
+        }
+
+        /* --- FORM CONTROLS & BUTTONS --- */
+        input, select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--tile-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-radius: var(--radius-lg);
+            margin-bottom: 14px;
+            font-size: 0.92rem;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
+        }
+
+        button.btn-primary {
+            background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            transition: var(--transition);
+            font-size: 0.95rem;
+            box-shadow: 0 8px 25px rgba(249, 115, 22, 0.3);
+        }
+
+        button.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(249, 115, 22, 0.5);
+        }
+
+        .btn-secondary {
+            background: var(--pill-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 13px 20px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            font-weight: 700;
+            width: 100%;
+            transition: var(--transition);
+            font-size: 0.95rem;
+        }
+        .btn-secondary:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.1);
+        }
+
+        .btn-cancel {
+            background: transparent;
+            color: var(--text-muted);
+            border: 1px solid var(--card-border);
+            padding: 10px;
+            border-radius: var(--radius-pill);
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 4px;
+            transition: var(--transition);
+            width: 100%;
+        }
+        .btn-cancel:hover { color: var(--text-main); border-color: var(--text-muted); }
+
+        .btn-sm {
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            border-radius: var(--radius-pill);
+            background: var(--pill-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+        }
+        .btn-sm:hover {
+            border-color: var(--accent-orange);
+            background: rgba(249, 115, 22, 0.15);
+        }
+
+        /* --- TABLES --- */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 6px;
+            font-size: 0.9rem;
+            color: var(--text-main);
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--table-th-bg); }
+        tr:hover td { background: var(--table-hover); }
+
+        /* --- ADMIN TABS --- */
+        .admin-tabs {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 14px;
+        }
+
+        .admin-tab-btn {
+            background: var(--pill-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 10px 18px;
+            cursor: pointer;
+            font-weight: 600;
+            border-radius: var(--radius-pill);
+            transition: var(--transition);
+            font-size: 0.88rem;
+        }
+
+        .admin-tab-btn:hover { color: var(--text-main); border-color: var(--accent-orange); }
+        .admin-tab-btn.active {
+            background: linear-gradient(135deg, var(--accent-orange), #ea580c);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.4);
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+
+        .badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            border-radius: var(--radius-pill);
+            display: inline-block;
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+        .badge-green { background: rgba(16, 185, 129, 0.15); color: #10b981; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .badge-red { background: rgba(244, 63, 94, 0.15); color: #f43f5e; border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-gray { background: rgba(113, 113, 122, 0.15); color: #71717a; border: 1px solid rgba(113, 113, 122, 0.3); }
+    </style>
+</head>
+<body>
+
+    <div class="app-frame">
+        <!-- FLOATING PILL NAVBAR -->
+        <header>
+            <div class="brand-logo">
+                <span>🏸</span> Newcastle Medicals
+            </div>
+            
+            <div class="pill-nav">
+                <button class="nav-pill-btn active" onclick="switchPage('courts', event)">Club Arenas</button>
+                <button class="nav-pill-btn" onclick="switchPage('admin', event)">Admin Suite</button>
+            </div>
+
+            <div class="header-actions">
+                <!-- Replaced Notification Icon with Light/Dark Theme Toggle Button -->
+                <div class="icon-btn" id="theme-toggle-btn" title="Toggle Light/Dark Mode" onclick="toggleTheme()">☀️</div>
+                <div class="icon-btn" title="User Profile / Admin Login" onclick="openProfileModal()">👤</div>
+            </div>
+        </header>
+
+        <!-- MAIN VIEW AREA -->
+        <main>
+            <!-- PAGE 1: COURTS & MATCH PICKER -->
+            <div id="page-courts" class="page-view active">
+                <div style="margin-bottom: 28px;">
+                    <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px;">Club Night Command</h1>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Click any available court to assign matches via automated or manual player selection.</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <!-- Left Column: Courts Live View -->
+                    <div>
+                        <div class="glass-card">
+                            <h3>🏟️ Live Court Arenas</h3>
+                            <div id="courts-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Queues & Check-in -->
+                    <div>
+                        <div class="glass-card">
+                            <h3>⏳ Live Waiting Queue</h3>
+                            <input type="text" id="queue-search" placeholder="🔍 Search player name..." oninput="renderWaitingQueue()">
+                            
+                            <!-- MODERN TOUCH-FRIENDLY MULTI-SELECT DROPDOWN -->
+                            <div class="dropdown-container">
+                                <button type="button" class="dropdown-toggle-btn" onclick="toggleColumnDropdown(event)">
+                                    <span id="dropdown-label">Select Columns to Display...</span>
+                                    <span>▼</span>
+                                </button>
+                                <div id="column-dropdown-panel" class="dropdown-panel">
+                                    <label class="dropdown-option">
+                                        <input type="checkbox" value="name" checked onchange="renderWaitingQueue()"> Name
+                                    </label>
+                                    <label class="dropdown-option">
+                                        <input type="checkbox" value="type" checked onchange="renderWaitingQueue()"> Type
+                                    </label>
+                                    <label class="dropdown-option">
+                                        <input type="checkbox" value="skill" checked onchange="renderWaitingQueue()"> Skill Level
+                                    </label>
+                                    <label class="dropdown-option">
+                                        <input type="checkbox" value="games" checked onchange="renderWaitingQueue()"> Games Played
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div style="overflow-x: auto;">
+                                <table>
+                                    <thead>
+                                        <tr id="waiting-queue-thead-tr"></tr>
+                                    </thead>
+                                    <tbody id="waiting-queue-tbody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div class="glass-card">
+                            <h3>📋 Quick Check-In Panel</h3>
+                            <input type="text" id="checkin-search" placeholder="🔍 Search player name..." oninput="renderCheckinPanel()">
+                            <div id="quick-checkin-list" class="checkin-tiles-grid"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAGE 2: ADMIN PANEL -->
+            <div id="page-admin" class="page-view">
+                <div style="margin-bottom: 28px;">
+                    <h1 style="font-size: 2rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 6px;">Admin Control Suite</h1>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">Newcastle Medicals Badminton Club Management Console</p>
+                </div>
+
+                <div id="auth-section" class="glass-card" style="max-width: 440px;">
+                    <h3>Secure Authentication</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">Enter master security password to unlock admin privileges.</p>
+                    <input type="password" id="admin-pass-input" placeholder="Password (default: 0426)">
+                    <button class="btn-primary" onclick="authenticateAdmin()">Authenticate Session</button>
+                </div>
+
+                <div id="admin-suite" style="display: none;">
+                    <div class="admin-tabs">
+                        <button class="admin-tab-btn active" onclick="switchAdminTab('roster', event)">Roster Directory</button>
+                        <button class="admin-tab-btn" onclick="switchAdminTab('add-player', event)">Register Player</button>
+                        <button class="admin-tab-btn" onclick="switchAdminTab('notifications', event)">🔔 Notifications</button>
+                        <button class="admin-tab-btn" onclick="switchAdminTab('courts-mgmt', event)">Court Management</button>
+                        <button class="admin-tab-btn" onclick="switchAdminTab('security', event)">Security</button>
+                        <button class="admin-tab-btn" onclick="switchAdminTab('audit', event)">💷 Payment Audit</button>
+                    </div>
+
+                    <!-- Tab 1: Roster -->
+                    <div id="admin-tab-roster" class="tab-content active glass-card">
+                        <h3>👥 Club Roster Directory</h3>
+                        <table>
+                            <thead>
+                                <tr><th>Name</th><th>Type</th><th>Skill</th><th>GamesPlayed</th><th>CheckedIn</th><th>Actions</th></tr>
+                            </thead>
+                            <tbody id="admin-roster-tbody"></tbody>
+                        </table>
+                    </div>
+
+                    <!-- Tab 2: Add Player -->
+                    <div id="admin-tab-add-player" class="tab-content glass-card" style="max-width: 520px;">
+                        <h3>➕ Register New Player</h3>
+                        <input type="text" id="new-p-name" placeholder="Athlete Full Name">
+                        <select id="new-p-type">
+                            <option value="Member">Member</option>
+                            <option value="Guest">Guest</option>
+                        </select>
+                        <select id="new-p-skill">
+                            <option value="Starter">Starter</option>
+                            <option value="Amateur">Amateur</option>
+                            <option value="Expert">Expert</option>
+                        </select>
+                        <button class="btn-primary" onclick="registerPlayer()">Save Player Record</button>
+                    </div>
+
+                    <!-- Tab 3: Notifications -->
+                    <div id="admin-tab-notifications" class="tab-content glass-card">
+                        <h3>🔔 System Notifications & Alerts</h3>
+                        <div id="notifications-list"></div>
+                    </div>
+
+                    <!-- Tab 4: Court Management -->
+                    <div id="admin-tab-courts-mgmt" class="tab-content glass-card">
+                        <h3>🏟️ Court Availability Controls</h3>
+                        <div id="admin-courts-list"></div>
+                    </div>
+
+                    <!-- Tab 5: Security Settings -->
+                    <div id="admin-tab-security" class="tab-content glass-card" style="max-width: 440px;">
+                        <h3>⚙️ Security Settings</h3>
+                        <input type="password" id="new-admin-pass" placeholder="Enter New Master Password">
+                        <button class="btn-primary" onclick="updatePassword()">Update Password</button>
+                    </div>
+
+                    <!-- Tab 6: Payment Audit -->
+                    <div id="admin-tab-audit" class="tab-content glass-card">
+                        <h3>💷 Session Fee Tracker</h3>
+                        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">Standard Fees: Members (£6), Guests (£9)</p>
+                        <div id="audit-metrics" style="font-size: 1.1rem; font-weight: 700; margin-bottom: 18px; color: #10b981; display: flex; gap: 24px; flex-wrap: wrap;"></div>
+                        <div id="admin-audit-tiles-list" class="audit-tiles-grid"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL 1: CHOOSE ASSIGNMENT METHOD -->
+    <div id="assign-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>🎯 Assign Court <span id="assign-court-num"></span></h2>
+            <p>How would you like to select players for this court?</p>
+            <div class="modal-btn-group">
+                <button class="btn-primary" onclick="openInitiatorModal('Manual')">👆 Manual Pick Players</button>
+                <button class="btn-secondary" onclick="openInitiatorModal('Auto')">⚡ Auto Pick Players</button>
+                <button class="btn-cancel" onclick="closeAssignModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1.5: WHO IS CHOOSING THE GAME? -->
+    <div id="initiator-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>👤 Who is Choosing?</h2>
+            <p>Select the player initiating this game request:</p>
+            <div id="initiator-tiles-container" class="tiles-grid"></div>
+            <div class="modal-btn-group">
+                <button class="btn-cancel" onclick="backToAssignModalFromInitiator()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: MANUAL PICK (CHOOSE 3 MORE) -->
+    <div id="manual-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>👥 Select 3 Additional Players</h2>
+            <p>Initiator: <strong id="initiator-display-name" style="color: var(--accent-amber);"></strong>. Select 3 more players below:</p>
+            <div id="manual-tiles-container" class="tiles-grid"></div>
+            <div class="modal-btn-group">
+                <button class="btn-primary" onclick="launchManualMatchFromModal()">🚀 Launch Match (4 Players)</button>
+                <button class="btn-cancel" onclick="backToInitiatorModal()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: AUTO PICK (CHOOSE ALGORITHM & AUTO 3) -->
+    <div id="auto-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>⚡ Automatic Lineup</h2>
+            <p>Initiator: <strong id="auto-initiator-display-name" style="color: var(--accent-amber);"></strong>. Select algorithm to pick the remaining 3 players:</p>
+            <select id="modal-auto-algorithm" style="margin-bottom: 16px;">
+                <option value="Casual">Casual (Balanced Games)</option>
+                <option value="Competitive">Competitive (Skill Tier)</option>
+            </select>
+            <div class="modal-btn-group">
+                <button class="btn-primary" onclick="launchAutoMatchFromModal()">⚡ Generate & Launch Match</button>
+                <button class="btn-cancel" onclick="backToInitiatorModal()">Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: WINNER SELECTION MODAL -->
+    <div id="winner-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>🏆 Match Complete</h2>
+            <p id="winner-modal-subtitle">Select the winning team:</p>
+            <div class="modal-btn-group">
+                <button class="btn-primary" style="background: linear-gradient(135deg, #3b82f6, #1d4ed8); box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);" onclick="confirmWinner('Blue')">🔵 Team Blue (<span id="modal-blue-names"></span>)</button>
+                <button class="btn-primary" style="background: linear-gradient(135deg, var(--accent-orange), #ea580c);" onclick="confirmWinner('Orange')">🟠 Team Orange (<span id="modal-orange-names"></span>)</button>
+                <button class="btn-cancel" onclick="closeWinnerModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 6: USER PROFILE / ADMIN LOGIN POPUP -->
+    <div id="profile-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2>👤 Admin Portal Login</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">Enter password to authenticate admin access and open control suite.</p>
+            <input type="password" id="modal-admin-pass" placeholder="Master Password (default: 0426)">
+            <div class="modal-btn-group">
+                <button class="btn-primary" onclick="modalAuthenticateAdmin()">🔑 Login as Admin</button>
+                <button class="btn-cancel" onclick="closeProfileModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 7: EDIT PLAYER RECORD POPUP -->
+    <div id="edit-player-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 440px; text-align: left;">
+            <h2 style="text-align: center;">✏️ Edit Player Record</h2>
+            <p style="text-align: center; font-size: 0.85rem; margin-bottom: 16px;">Update athlete information below.</p>
+            
+            <label style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Player Name</label>
+            <input type="text" id="edit-p-name">
+            
+            <label style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Player Type</label>
+            <select id="edit-p-type">
+                <option value="Member">Member</option>
+                <option value="Guest">Guest</option>
+            </select>
+
+            <label style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 4px;">Skill Level</label>
+            <select id="edit-p-skill">
+                <option value="Starter">Starter</option>
+                <option value="Amateur">Amateur</option>
+                <option value="Expert">Expert</option>
+            </select>
+
+            <div class="modal-btn-group" style="margin-top: 10px;">
+                <button class="btn-primary" onclick="saveEditedPlayer()">💾 Save Changes</button>
+                <button class="btn-cancel" onclick="closeEditPlayerModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT STATE & LOGIC -->
+    <script>
+        let adminLoggedIn = false;
+        let adminPassword = "0426";
+        let selectedCourtId = null;
+        let activeEndingCourtId = null;
+        let chosenPickType = null;
+        let selectedInitiator = null;
+        let selectedManualPlayers = [];
+        let customNotifications = [];
+        let editingPlayerIndex = null;
+        
+        let players = [
+            { Name: 'Alice', Type: 'Member', Skill: 'Expert', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Bob', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Charlie', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'David', Type: 'Member', Skill: 'Expert', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Eva', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 3, Status: 'Waiting', CheckedIn: false, Paid: false },
+            { Name: 'Frank', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: false, Paid: false },
+            { Name: 'Grace', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Hannah', Type: 'Member', Skill: 'Expert', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false }
+        ];
+
+        let courts = {
+            1: { status: 'Free', players: [], mode: '' },
+            2: { status: 'Free', players: [], mode: '' }
+        };
+
+        window.addEventListener('click', function(e) {
+            if (!e.target.closest('.dropdown-container')) {
+                document.getElementById('column-dropdown-panel').classList.remove('open');
+            }
+        });
+
+        function toggleTheme() {
+            document.body.classList.toggle('light-mode');
+            const btn = document.getElementById('theme-toggle-btn');
+            if (document.body.classList.contains('light-mode')) {
+                btn.innerText = '🌙';
+            } else {
+                btn.innerText = '☀️';
+            }
+        }
+
+        function toggleColumnDropdown(e) {
+            e.stopPropagation();
+            const panel = document.getElementById('column-dropdown-panel');
+            panel.classList.toggle('open');
+        }
+
+        function openProfileModal() {
+            document.getElementById('profile-modal').style.display = 'flex';
+        }
+        function closeProfileModal() {
+            document.getElementById('profile-modal').style.display = 'none';
+        }
+
+        function modalAuthenticateAdmin() {
+            const input = document.getElementById('modal-admin-pass').value;
+            if (input === adminPassword) {
+                adminLoggedIn = true;
+                const authSec = document.getElementById('auth-section');
+                const adminSuite = document.getElementById('admin-suite');
+                if (authSec) authSec.style.display = 'none';
+                if (adminSuite) adminSuite.style.display = 'block';
+
+                closeProfileModal();
+                document.getElementById('modal-admin-pass').value = '';
+                alert("Successfully logged in as Admin!");
+                
+                const adminNavBtn = document.querySelectorAll('.pill-nav .nav-pill-btn')[1];
+                switchPage('admin', { currentTarget: adminNavBtn });
+                renderAdminSuite();
+            } else {
+                alert("Invalid password. Default is 0426.");
+            }
+        }
+
+        function switchPage(pageId, event) {
+            document.querySelectorAll('.page-view').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.pill-nav .nav-pill-btn').forEach(b => b.classList.remove('active'));
+            
+            if (pageId === 'courts') {
+                document.getElementById('page-courts').classList.add('active');
+                event.currentTarget.classList.add('active');
+                renderCourts();
+                renderWaitingQueue();
+                renderCheckinPanel();
+            } else if (pageId === 'admin') {
+                document.getElementById('page-admin').classList.add('active');
+                event.currentTarget.classList.add('active');
+                if (adminLoggedIn) renderAdminSuite();
+            }
+        }
+
+        function renderCourts() {
+            const container = document.getElementById('courts-container');
+            container.innerHTML = '';
+
+            for (const [cid, cinfo] of Object.entries(courts)) {
+                let html = `<div style="font-weight: 700; margin-bottom: 6px;">Court ${cid}</div>`;
+                
+                if (cinfo.status === 'Blocked') {
+                    html += `<span class="badge badge-gray">🚫 Blocked</span>`;
+                    html += `<div class="court-blocked">🚫 COURT BLOCKED FOR MATCH NIGHT</div>`;
+                } else if (cinfo.status === 'Playing') {
+                    const [p1, p2, p3, p4] = cinfo.players.length === 4 ? cinfo.players : ["-", "-", "-", "-"];
+                    html += `<span class="badge badge-red">🔴 In Play (${cinfo.mode})</span>`;
+                    html += `
+                        <div class="court-arena">
+                            <div class="court-inner-border"></div>
+                            <div class="court-net"></div>
+                            <div class="player-pill-tag blue-1">🔵 ${p1}</div>
+                            <div class="player-pill-tag blue-2">🔵 ${p2}</div>
+                            <div class="player-pill-tag orange-1">${p3} 🟠</div>
+                            <div class="player-pill-tag orange-2">${p4} 🟠</div>
+                        </div>
+                    `;
+                    html += `<button class="btn-primary" onclick="openWinnerModal(${cid})" style="margin-top: 8px;">🏁 End Match & Select Winner</button>`;
+                } else {
+                    html += `<span class="badge badge-green">🟢 Available</span>`;
+                    html += `
+                        <div class="court-available" onclick="openAssignModal(${cid})">
+                            <span style="font-size: 1.5rem; margin-bottom: 4px;">➕</span>
+                            <span>Click to Assign Match</span>
+                        </div>
+                    `;
+                }
+                html += `<div style="height: 1px; background: var(--card-border); margin: 20px 0;"></div>`;
+                container.innerHTML += html;
+            }
+        }
+
+        function openAssignModal(cid) {
+            selectedCourtId = cid;
+            document.getElementById('assign-court-num').innerText = cid;
+            document.getElementById('assign-modal').style.display = 'flex';
+        }
+
+        function closeAssignModal() {
+            selectedCourtId = null;
+            document.getElementById('assign-modal').style.display = 'none';
+        }
+
+        function openInitiatorModal(pickType) {
+            chosenPickType = pickType;
+            document.getElementById('assign-modal').style.display = 'none';
+            renderInitiatorTiles();
+            document.getElementById('initiator-modal').style.display = 'flex';
+        }
+
+        function renderInitiatorTiles() {
+            const container = document.getElementById('initiator-tiles-container');
+            container.innerHTML = '';
+
+            let waitingPlayers = players.filter(p => p.CheckedIn && p.Status === 'Waiting');
+            waitingPlayers.sort((a, b) => a.GamesPlayed - b.GamesPlayed);
+
+            if (waitingPlayers.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); grid-column: span 2; text-align: center;">No checked-in players available.</p>`;
+                return;
+            }
+
+            waitingPlayers.forEach(p => {
+                container.innerHTML += `
+                    <div class="player-tile" onclick="selectInitiator('${p.Name}')">
+                        <div class="tile-name">${p.Name}</div>
+                        <div class="tile-meta">
+                            <span>${p.Type} • ${p.Skill}</span>
+                            <span>Games: ${p.GamesPlayed}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function selectInitiator(name) {
+            selectedInitiator = name;
+            document.getElementById('initiator-modal').style.display = 'none';
+
+            if (chosenPickType === 'Manual') {
+                selectedManualPlayers = [];
+                document.getElementById('initiator-display-name').innerText = name;
+                renderManualTiles();
+                document.getElementById('manual-modal').style.display = 'flex';
+            } else {
+                document.getElementById('auto-initiator-display-name').innerText = name;
+                document.getElementById('auto-modal').style.display = 'flex';
+            }
+        }
+
+        function backToAssignModalFromInitiator() {
+            document.getElementById('initiator-modal').style.display = 'none';
+            document.getElementById('assign-modal').style.display = 'flex';
+        }
+
+        function backToInitiatorModal() {
+            document.getElementById('manual-modal').style.display = 'none';
+            document.getElementById('auto-modal').style.display = 'none';
+            document.getElementById('initiator-modal').style.display = 'flex';
+        }
+
+        function renderManualTiles() {
+            const container = document.getElementById('manual-tiles-container');
+            container.innerHTML = '';
+
+            let waitingPlayers = players.filter(p => p.CheckedIn && p.Status === 'Waiting' && p.Name !== selectedInitiator);
+            waitingPlayers.sort((a, b) => a.GamesPlayed - b.GamesPlayed);
+
+            if (waitingPlayers.length === 0) {
+                container.innerHTML = `<p style="color: var(--text-muted); grid-column: span 2; text-align: center;">No other checked-in players available.</p>`;
+                return;
+            }
+
+            waitingPlayers.forEach(p => {
+                const isSelected = selectedManualPlayers.includes(p.Name);
+                container.innerHTML += `
+                    <div class="player-tile ${isSelected ? 'selected' : ''}" onclick="toggleManualTile('${p.Name}')">
+                        <div class="tile-name">${p.Name} ${isSelected ? '✓' : ''}</div>
+                        <div class="tile-meta">
+                            <span>${p.Type} • ${p.Skill}</span>
+                            <span>Games: ${p.GamesPlayed}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleManualTile(name) {
+            if (selectedManualPlayers.includes(name)) {
+                selectedManualPlayers = selectedManualPlayers.filter(n => n !== name);
+            } else {
+                if (selectedManualPlayers.length >= 3) {
+                    alert("You can only select up to 3 additional players.");
+                    return;
+                }
+                selectedManualPlayers.push(name);
+            }
+            renderManualTiles();
+        }
+
+        function launchManualMatchFromModal() {
+            if (selectedManualPlayers.length !== 3) {
+                alert("Please select exactly 3 additional players.");
+                return;
+            }
+
+            let finalMatchPlayers = [selectedInitiator, ...selectedManualPlayers];
+
+            let waitingPlayers = players.filter(p => p.CheckedIn && p.Status === 'Waiting');
+            waitingPlayers.sort((a, b) => a.GamesPlayed - b.GamesPlayed);
+            let minGamesInQueue = waitingPlayers.length > 0 ? waitingPlayers[0].GamesPlayed : 0;
+
+            let bypassedPlayers = selectedManualPlayers.filter(name => {
+                let p = players.find(x => x.Name === name);
+                return p && p.GamesPlayed > minGamesInQueue;
+            });
+
+            if (bypassedPlayers.length > 0) {
+                let proceed = confirm(`⚠️ Warning: ${selectedInitiator} selected players (${bypassedPlayers.join(', ')}) who have already played more games than other waiting members! Are you sure?`);
+                if (!proceed) return;
+
+                customNotifications.unshift({
+                    text: `⚠️ Fairness Warning: Player <strong>${selectedInitiator}</strong> bypassed waiting players by choosing participants who already played more games (${bypassedPlayers.join(', ')}).`,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+            }
+
+            courts[selectedCourtId] = { status: 'Playing', players: finalMatchPlayers, mode: 'Manual' };
+            finalMatchPlayers.forEach(name => {
+                const p = players.find(x => x.Name === name);
+                if (p) p.Status = 'In Match';
+            });
+
+            document.getElementById('manual-modal').style.display = 'none';
+            selectedCourtId = null;
+            selectedInitiator = null;
+            selectedManualPlayers = [];
+            renderCourts();
+            renderWaitingQueue();
+            if (adminLoggedIn) renderAdminSuite();
+        }
+
+        function launchAutoMatchFromModal() {
+            const algo = document.getElementById('modal-auto-algorithm').value;
+
+            let eligible = players.filter(p => p.CheckedIn && p.Status === 'Waiting' && p.Name !== selectedInitiator);
+            if (eligible.length < 3) {
+                alert("Insufficient other checked-in players available for auto lineup (Minimum 3 required).");
+                return;
+            }
+
+            if (algo === 'Casual') {
+                eligible.sort((a, b) => a.GamesPlayed - b.GamesPlayed);
+            } else {
+                const ranks = { 'Starter': 1, 'Amateur': 2, 'Expert': 3 };
+                eligible.sort((a, b) => ranks[b.Skill] - ranks[a.Skill]);
+            }
+
+            const chosenOthers = eligible.slice(0, 3).map(p => p.Name);
+            const finalMatchPlayers = [selectedInitiator, ...chosenOthers];
+
+            let waitingPlayers = players.filter(p => p.CheckedIn && p.Status === 'Waiting');
+            waitingPlayers.sort((a, b) => a.GamesPlayed - b.GamesPlayed);
+            let minGamesInQueue = waitingPlayers.length > 0 ? waitingPlayers[0].GamesPlayed : 0;
+
+            let bypassedPlayers = chosenOthers.filter(name => {
+                let p = players.find(x => x.Name === name);
+                return p && p.GamesPlayed > minGamesInQueue;
+            });
+
+            if (bypassedPlayers.length > 0) {
+                customNotifications.unshift({
+                    text: `⚠️ Auto-Match Fairness Notice: Lineup initiated by <strong>${selectedInitiator}</strong> included players with higher game counts (${bypassedPlayers.join(', ')}).`,
+                    time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                });
+            }
+
+            courts[selectedCourtId] = { status: 'Playing', players: finalMatchPlayers, mode: algo };
+            finalMatchPlayers.forEach(name => {
+                const p = players.find(x => x.Name === name);
+                if (p) p.Status = 'In Match';
+            });
+
+            document.getElementById('auto-modal').style.display = 'none';
+            selectedCourtId = null;
+            selectedInitiator = null;
+            renderCourts();
+            renderWaitingQueue();
+            if (adminLoggedIn) renderAdminSuite();
+        }
+
+        function openWinnerModal(cid) {
+            activeEndingCourtId = cid;
+            const court = courts[cid];
+            if (court.players.length !== 4) return;
+
+            document.getElementById('winner-modal-subtitle').innerText = `Select the winning team for Court ${cid}:`;
+            document.getElementById('modal-blue-names').innerText = `${court.players[0]}, ${court.players[1]}`;
+            document.getElementById('modal-orange-names').innerText = `${court.players[2]}, ${court.players[3]}`;
+            
+            document.getElementById('winner-modal').style.display = 'flex';
+        }
+
+        function closeWinnerModal() {
+            activeEndingCourtId = null;
+            document.getElementById('winner-modal').style.display = 'none';
+        }
+
+        function confirmWinner(winningTeam) {
+            if (!activeEndingCourtId) return;
+            const court = courts[activeEndingCourtId];
+
+            court.players.forEach(name => {
+                const p = players.find(x => x.Name === name);
+                if (p) {
+                    p.GamesPlayed += 1;
+                    p.Status = 'Waiting';
+                }
+            });
+
+            courts[activeEndingCourtId] = { status: 'Free', players: [], mode: '' };
+            closeWinnerModal();
+            renderCourts();
+            renderWaitingQueue();
+            if (adminLoggedIn) renderAdminSuite();
+        }
+
+        function renderWaitingQueue() {
+            const theadTr = document.getElementById('waiting-queue-thead-tr');
+            const tbody = document.getElementById('waiting-queue-tbody');
+            theadTr.innerHTML = '';
+            tbody.innerHTML = '';
+
+            const checkboxes = document.querySelectorAll('#column-dropdown-panel input[type="checkbox"]');
+            let selectedCols = [];
+            checkboxes.forEach(cb => {
+                if (cb.checked) selectedCols.push(cb.value);
+            });
+
+            const labelEl = document.getElementById('dropdown-label');
+            if (selectedCols.length === 4) {
+                labelEl.innerText = "All Columns Visible (4)";
+            } else if (selectedCols.length === 0) {
+                labelEl.innerText = "No Columns Selected";
+            } else {
+                labelEl.innerText = `${selectedCols.length} Columns Selected`;
+            }
+
+            let showName = selectedCols.includes('name');
+            let showType = selectedCols.includes('type');
+            let showSkill = selectedCols.includes('skill');
+            let showGames = selectedCols.includes('games');
+
+            let headerHtml = '';
+            if (showName) headerHtml += `<th>Name</th>`;
+            if (showType) headerHtml += `<th>Type</th>`;
+            if (showSkill) headerHtml += `<th>Skill</th>`;
+            if (showGames) headerHtml += `<th>Games</th>`;
+            theadTr.innerHTML = headerHtml;
+
+            const query = document.getElementById('queue-search').value.toLowerCase();
+            let waiting = players.filter(p => p.CheckedIn && p.Status === 'Waiting');
+            if (query) {
+                waiting = waiting.filter(p => p.Name.toLowerCase().includes(query));
+            }
+            waiting.sort((a, b) => a.GamesPlayed - b.GamesPlayed);
+
+            waiting.forEach(p => {
+                let rowHtml = '';
+                if (showName) rowHtml += `<td><strong>${p.Name}</strong></td>`;
+                if (showType) rowHtml += `<td>${p.Type}</td>`;
+                if (showSkill) rowHtml += `<td>${p.Skill}</td>`;
+                if (showGames) rowHtml += `<td>${p.GamesPlayed}</td>`;
+                tbody.innerHTML += `<tr>${rowHtml}</tr>`;
+            });
+        }
+
+        function renderCheckinPanel() {
+            const container = document.getElementById('quick-checkin-list');
+            container.innerHTML = '';
+            const query = document.getElementById('checkin-search').value.toLowerCase();
+
+            players.forEach((p, idx) => {
+                if (query && !p.Name.toLowerCase().includes(query)) return;
+                container.innerHTML += `
+                    <div class="checkin-tile ${p.CheckedIn ? 'checked-in' : ''}" onclick="toggleCheckin(${idx})">
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.9rem;">${p.Name}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${p.Type}</div>
+                        </div>
+                        <div style="font-size: 0.85rem; font-weight: 600; color: ${p.CheckedIn ? '#10b981' : 'var(--text-muted)'};">
+                            ${p.CheckedIn ? '✓ Present' : 'Absent'}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function toggleCheckin(idx) {
+            players[idx].CheckedIn = !players[idx].CheckedIn;
+            renderWaitingQueue();
+            renderCheckinPanel();
+            if (adminLoggedIn) renderAdminSuite();
+        }
+
+        function togglePaymentStatus(playerName) {
+            const p = players.find(x => x.Name === playerName);
+            if (p) {
+                p.Paid = !p.Paid;
+                renderAdminSuite();
+            }
+        }
+
+        function authenticateAdmin() {
+            const input = document.getElementById('admin-pass-input').value;
+            if (input === adminPassword) {
+                adminLoggedIn = true;
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('admin-suite').style.display = 'block';
+                renderAdminSuite();
+            } else {
+                alert("Invalid password. Default is 0426.");
+            }
+        }
+
+        function switchAdminTab(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(`admin-tab-${tabId}`).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        function openEditPlayerModal(idx) {
+            editingPlayerIndex = idx;
+            const p = players[idx];
+            document.getElementById('edit-p-name').value = p.Name;
+            document.getElementById('edit-p-type').value = p.Type;
+            document.getElementById('edit-p-skill').value = p.Skill;
+            document.getElementById('edit-player-modal').style.display = 'flex';
+        }
+
+        function closeEditPlayerModal() {
+            editingPlayerIndex = null;
+            document.getElementById('edit-player-modal').style.display = 'none';
+        }
+
+        function saveEditedPlayer() {
+            if (editingPlayerIndex === null) return;
+            const name = document.getElementById('edit-p-name').value.trim();
+            const type = document.getElementById('edit-p-type').value;
+            const skill = document.getElementById('edit-p-skill').value;
+
+            if (!name) {
+                alert("Player name cannot be empty.");
+                return;
+            }
+
+            players[editingPlayerIndex].Name = name;
+            players[editingPlayerIndex].Type = type;
+            players[editingPlayerIndex].Skill = skill;
+
+            closeEditPlayerModal();
+            renderAdminSuite();
+            renderWaitingQueue();
+            renderCheckinPanel();
+            renderCourts();
+            alert("Player record updated successfully!");
+        }
+
+        function renderAdminSuite() {
+            const rosterTbody = document.getElementById('admin-roster-tbody');
+            rosterTbody.innerHTML = '';
+            players.forEach((p, idx) => {
+                rosterTbody.innerHTML += `
+                    <tr>
+                        <td><strong>${p.Name}</strong></td>
+                        <td>${p.Type}</td>
+                        <td>${p.Skill}</td>
+                        <td>${p.GamesPlayed}</td>
+                        <td>${p.CheckedIn}</td>
+                        <td><button class="btn-sm" onclick="openEditPlayerModal(${idx})">✏️ Edit</button></td>
+                    </tr>
+                `;
+            });
+
+            const notifList = document.getElementById('notifications-list');
+            notifList.innerHTML = '';
+            
+            if (customNotifications.length > 0) {
+                customNotifications.forEach(n => {
+                    notifList.innerHTML += `<p style="color: var(--accent-amber); margin-bottom: 10px; font-size: 0.9rem; border-left: 3px solid var(--accent-amber); padding-left: 10px;">[${n.time}] ${n.text}</p>`;
+                });
+            }
+
+            let alertCount = 0;
+            players.forEach(p => {
+                if (p.Type === 'Guest' && p.GamesPlayed >= 3) {
+                    alertCount++;
+                    notifList.innerHTML += `<p style="color: var(--accent-amber); margin-bottom: 8px; font-weight: 500;">⚠️ <strong>${p.Name}</strong> (Guest) has reached the 3-game limit.</p>`;
+                }
+            });
+
+            if (customNotifications.length === 0 && alertCount === 0) {
+                notifList.innerHTML = `<p style="color: var(--text-muted);">No active warnings or alerts.</p>`;
+            }
+
+            const courtsList = document.getElementById('admin-courts-list');
+            courtsList.innerHTML = '';
+            for (const [cid, cinfo] of Object.entries(courts)) {
+                courtsList.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">
+                        <span><strong>Court ${cid}</strong> — Status: <code style="color: var(--text-muted);">${cinfo.status}</code></span>
+                        <select onchange="changeCourtStatus(${cid}, this.value)" style="width: 150px; margin-bottom: 0;">
+                            <option value="Free" ${cinfo.status==='Free'?'selected':''}>Free</option>
+                            <option value="Blocked" ${cinfo.status==='Blocked'?'selected':''}>Blocked</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            const checkedInPlayers = players.filter(p => p.CheckedIn);
+            let expectedTotal = checkedInPlayers.reduce((sum, p) => sum + (p.Type === 'Member' ? 6 : 9), 0);
+            let collectedTotal = checkedInPlayers.filter(p => p.Paid).reduce((sum, p) => sum + (p.Type === 'Member' ? 6 : 9), 0);
+            
+            document.getElementById('audit-metrics').innerHTML = `
+                <span>Expected Revenue: <strong style="color: #10b981;">£${expectedTotal}</strong></span>
+                <span>Collected So Far: <strong style="color: var(--accent-amber);">£${collectedTotal}</strong></span>
+            `;
+            
+            const auditGrid = document.getElementById('admin-audit-tiles-list');
+            auditGrid.innerHTML = '';
+            checkedInPlayers.forEach(p => {
+                const fee = p.Type === 'Member' ? 6 : 9;
+                auditGrid.innerHTML += `
+                    <div class="audit-tile ${p.Paid ? 'paid' : ''}" onclick="togglePaymentStatus('${p.Name}')" style="cursor: pointer;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <div style="font-weight: 700; font-size: 1rem; color: var(--text-main);">${p.Name}</div>
+                                <div style="font-size: 0.78rem; color: var(--text-muted);">${p.Type}</div>
+                            </div>
+                            <span style="font-size: 1.1rem; font-weight: 800; color: #10b981;">£${fee}</span>
+                        </div>
+                        <div style="margin-top: 6px; display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+                            <span style="color: var(--text-muted);">Status:</span>
+                            <span style="font-weight: 700; color: ${p.Paid ? '#10b981' : '#f43f5e'};">
+                                ${p.Paid ? '✓ Paid' : 'Pending'}
+                            </span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function registerPlayer() {
+            const name = document.getElementById('new-p-name').value.trim();
+            const type = document.getElementById('new-p-type').value;
+            const skill = document.getElementById('new-p-skill').value;
+
+            if (name && !players.some(p => p.Name.toLowerCase() === name.toLowerCase())) {
+                players.push({ Name: name, Type: type, Skill: skill, GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false });
+                alert(`Successfully registered ${name}!`);
+                document.getElementById('new-p-name').value = '';
+                renderAdminSuite();
+                renderWaitingQueue();
+                renderCheckinPanel();
+            } else {
+                alert("Name is empty or player already exists.");
+            }
+        }
+
+        function changeCourtStatus(cid, status) {
+            if (courts[cid].status !== 'Playing') {
+                courts[cid].status = status;
+                renderCourts();
+                renderAdminSuite();
+            } else {
+                alert("Cannot modify status of a court currently in play.");
+            }
+        }
+
+        function updatePassword() {
+            const newPass = document.getElementById('new-admin-pass').value;
+            if (newPass) {
+                adminPassword = newPass;
+                alert("Admin password updated successfully!");
+                document.getElementById('new-admin-pass').value = '';
+            }
+        }
+
+        renderCourts();
+        renderWaitingQueue();
+        renderCheckinPanel();
+    </script>
+</body>
+</html>
