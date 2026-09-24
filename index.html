@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Newcastle Medicals Badminton Club</title>
+    <title>(your club name)</title>
     <!-- Include Supabase JS SDK CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
@@ -325,6 +325,52 @@
         .court-available:hover {
             background: rgba(16, 185, 129, 0.12);
             border-color: rgba(16, 185, 129, 0.6);
+        }
+
+        /* --- NEXT GAME SLOTS STYLING --- */
+        .next-game-box {
+            background: rgba(249, 115, 22, 0.04);
+            border: 1px dashed var(--accent-orange);
+            border-radius: var(--radius-lg);
+            padding: 14px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+        .next-game-players {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin: 10px 0;
+            font-size: 0.82rem;
+        }
+        .next-game-player-pill {
+            background: var(--tile-bg);
+            border: 1px solid var(--card-border);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .next-game-available {
+            background: rgba(249, 115, 22, 0.05);
+            border: 2px dashed rgba(249, 115, 22, 0.4);
+            border-radius: var(--radius-lg);
+            height: 110px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 8px;
+            color: var(--accent-orange);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .next-game-available:hover {
+            background: rgba(249, 115, 22, 0.12);
+            border-color: var(--accent-orange);
         }
 
         /* --- CUSTOM MODAL POPUPS --- */
@@ -707,7 +753,7 @@
         <!-- FLOATING PILL NAVBAR -->
         <header>
             <div class="brand-logo">
-                <span>🏸</span> Newcastle Medicals
+                <span>🏸</span> (your club name)
             </div>
             
             <div class="pill-nav">
@@ -727,7 +773,7 @@
             <div id="page-courts" class="page-view active">
                 <div style="margin-bottom: 22px;">
                     <h1 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px;">Club Night Command</h1>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Click any available court to assign matches via automated or manual player selection.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Click any available court or next game slot to assign matches via manual or auto player selection.</p>
                 </div>
 
                 <div class="dashboard-grid">
@@ -739,8 +785,15 @@
                         </div>
                     </div>
 
-                    <!-- Right Column: Queues & Check-in -->
+                    <!-- Right Column: Next Games Queues & Check-in -->
                     <div>
+                        <!-- NEXT GAME EXTRA SLOTS -->
+                        <div class="glass-card">
+                            <h3>⚡ Next Game Queue Slots</h3>
+                            <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px;">Pre-arrange upcoming games. Once assigned here, deploy them to any free court instantly!</p>
+                            <div id="next-games-container"></div>
+                        </div>
+
                         <div class="glass-card">
                             <h3>⏳ Live Waiting Queue</h3>
                             <input type="text" id="queue-search" placeholder="🔍 Search player name..." oninput="renderWaitingQueue()">
@@ -790,7 +843,7 @@
             <div id="page-admin" class="page-view">
                 <div style="margin-bottom: 22px;">
                     <h1 style="font-size: 1.6rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 4px;">Admin Control Suite</h1>
-                    <p style="color: var(--text-muted); font-size: 0.9rem;">Newcastle Medicals Badminton Club Management Console</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">(your club name) Management Console</p>
                 </div>
 
                 <div id="auth-section" class="glass-card" style="max-width: 440px;">
@@ -916,8 +969,8 @@
     <!-- MODAL 1: CHOOSE ASSIGNMENT METHOD -->
     <div id="assign-modal" class="modal-overlay">
         <div class="modal-card">
-            <h2>🎯 Assign Court <span id="assign-court-num"></span></h2>
-            <p>How would you like to select players for this court?</p>
+            <h2>🎯 Assign <span id="assign-target-title"></span></h2>
+            <p>How would you like to select players for this lineup?</p>
             <div class="modal-btn-group">
                 <button class="btn-primary" onclick="openInitiatorModal('Manual')">👆 Manual Pick Players</button>
                 <button class="btn-secondary" onclick="openInitiatorModal('Auto')">⚡ Auto Pick Players</button>
@@ -945,7 +998,7 @@
             <p>Initiator: <strong id="initiator-display-name" style="color: var(--accent-amber);"></strong>. Select 3 more players below:</p>
             <div id="manual-tiles-container" class="tiles-grid"></div>
             <div class="modal-btn-group">
-                <button class="btn-primary" onclick="launchManualMatchFromModal()">🚀 Launch Match (4 Players)</button>
+                <button class="btn-primary" onclick="launchManualMatchFromModal()">🚀 Save Lineup (4 Players)</button>
                 <button class="btn-cancel" onclick="backToInitiatorModal()">Back</button>
             </div>
         </div>
@@ -961,7 +1014,7 @@
                 <option value="Competitive">Competitive (Skill Tier)</option>
             </select>
             <div class="modal-btn-group">
-                <button class="btn-primary" onclick="launchAutoMatchFromModal()">⚡ Generate & Launch Match</button>
+                <button class="btn-primary" onclick="launchAutoMatchFromModal()">⚡ Generate & Save Lineup</button>
                 <button class="btn-cancel" onclick="backToInitiatorModal()">Back</button>
             </div>
         </div>
@@ -1031,7 +1084,8 @@
 
         let adminLoggedIn = false;
         let adminPassword = "0426";
-        let selectedCourtId = null;
+        let assignmentTargetType = null; // 'court' or 'nextslot'
+        let selectedTargetId = null;
         let activeEndingCourtId = null;
         let chosenPickType = null;
         let selectedInitiator = null;
@@ -1047,12 +1101,56 @@
             { Name: 'Eva', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 3, Status: 'Waiting', CheckedIn: false, Paid: false },
             { Name: 'Frank', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: false, Paid: false },
             { Name: 'Grace', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
-            { Name: 'Hannah', Type: 'Member', Skill: 'Expert', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false }
+            { Name: 'Hannah', Type: 'Member', Skill: 'Expert', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            // 35 Additional Test Players
+            { Name: 'Ian', Type: 'Member', Skill: 'Amateur', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Julia', Type: 'Guest', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Kevin', Type: 'Member', Skill: 'Expert', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Laura', Type: 'Member', Skill: 'Amateur', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Marcus', Type: 'Guest', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Nina', Type: 'Member', Skill: 'Starter', GamesPlayed: 3, Status: 'Waiting', CheckedIn: false, Paid: false },
+            { Name: 'Oliver', Type: 'Member', Skill: 'Amateur', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Paula', Type: 'Guest', Skill: 'Expert', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Quentin', Type: 'Member', Skill: 'Starter', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Rachel', Type: 'Member', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Sam', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Tina', Type: 'Member', Skill: 'Starter', GamesPlayed: 4, Status: 'Waiting', CheckedIn: false, Paid: false },
+            { Name: 'Umar', Type: 'Member', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Vicky', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Will', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Xena', Type: 'Member', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Yusuf', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 3, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Zoe', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Aaron', Type: 'Member', Skill: 'Amateur', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Bella', Type: 'Guest', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Caleb', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Diana', Type: 'Member', Skill: 'Expert', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Ethan', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 1, Status: 'Waiting', CheckedIn: false, Paid: false },
+            { Name: 'Fiona', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'George', Type: 'Member', Skill: 'Expert', GamesPlayed: 3, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Hazel', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Isaac', Type: 'Member', Skill: 'Starter', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Jasmine', Type: 'Member', Skill: 'Expert', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Kyle', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Lily', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Mason', Type: 'Member', Skill: 'Expert', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Nora', Type: 'Guest', Skill: 'Starter', GamesPlayed: 1, Status: 'Waiting', CheckedIn: false, Paid: false },
+            { Name: 'Owen', Type: 'Member', Skill: 'Amateur', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Piper', Type: 'Member', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Ryan', Type: 'Guest', Skill: 'Amateur', GamesPlayed: 2, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Sophie', Type: 'Member', Skill: 'Starter', GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false },
+            { Name: 'Tyler', Type: 'Member', Skill: 'Expert', GamesPlayed: 1, Status: 'Waiting', CheckedIn: true, Paid: false }
         ];
 
         let courts = {
             1: { status: 'Free', players: [], mode: '' },
             2: { status: 'Free', players: [], mode: '' }
+        };
+
+        // --- NEXT GAME QUEUE SLOTS (2 Extra Extra Slots functioning like normal courts) ---
+        let nextGameSlots = {
+            1: { players: [], mode: '' },
+            2: { players: [], mode: '' }
         };
 
         // --- ADD NEW COURT FEATURE ---
@@ -1095,9 +1193,14 @@
                 Object.keys(courts).forEach(cid => {
                     courts[cid] = { status: 'Free', players: [], mode: '' };
                 });
+                nextGameSlots = {
+                    1: { players: [], mode: '' },
+                    2: { players: [], mode: '' }
+                };
                 localStorage.setItem('nm_last_reset_date', new Date().toDateString());
                 alert("Daily reset completed successfully!");
                 renderCourts();
+                renderNextGameSlots();
                 renderWaitingQueue();
                 renderCheckinPanel();
                 if (adminLoggedIn) renderAdminSuite();
@@ -1107,7 +1210,7 @@
         // --- DOWNLOAD DATA FEATURE ---
         function downloadDataType(dataType) {
             let csvContent = "data:text/csv;charset=utf-8,";
-            let filename = `newcastle_medicals_${dataType}_${new Date().toISOString().slice(0,10)}.csv`;
+            let filename = `club_data_${dataType}_${new Date().toISOString().slice(0,10)}.csv`;
 
             if (dataType === 'payment') {
                 csvContent += "Name,Type,Fee,PaidStatus\r\n";
@@ -1139,6 +1242,7 @@
         window.addEventListener('load', () => {
             checkDailyReset();
             renderCourts();
+            renderNextGameSlots();
             renderWaitingQueue();
             renderCheckinPanel();
         });
@@ -1201,6 +1305,7 @@
                 document.getElementById('page-courts').classList.add('active');
                 event.currentTarget.classList.add('active');
                 renderCourts();
+                renderNextGameSlots();
                 renderWaitingQueue();
                 renderCheckinPanel();
             } else if (pageId === 'admin') {
@@ -1237,7 +1342,7 @@
                 } else {
                     html += `<span class="badge badge-green">🟢 Available</span>`;
                     html += `
-                        <div class="court-available" onclick="openAssignModal(${cid})">
+                        <div class="court-available" onclick="openAssignModal('court', ${cid})">
                             <span style="font-size: 1.4rem; margin-bottom: 4px;">➕</span>
                             <span>Click to Assign Match</span>
                         </div>
@@ -1248,14 +1353,100 @@
             }
         }
 
-        function openAssignModal(cid) {
-            selectedCourtId = cid;
-            document.getElementById('assign-court-num').innerText = cid;
+        // --- NEXT GAME QUEUE SLOTS LOGIC (Functions like normal courts) ---
+        function renderNextGameSlots() {
+            const container = document.getElementById('next-games-container');
+            container.innerHTML = '';
+
+            for (const [slotId, slotInfo] of Object.entries(nextGameSlots)) {
+                let html = `<div class="next-game-box">`;
+                html += `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">`;
+                html += `<strong style="font-size: 0.9rem; color: var(--accent-amber);">⚡ Next Game Queue #${slotId}</strong>`;
+                
+                if (slotInfo.players.length === 4) {
+                    html += `<span class="badge badge-green">Ready (${slotInfo.mode})</span>`;
+                } else {
+                    html += `<span class="badge badge-gray">Empty Slot</span>`;
+                }
+                html += `</div>`;
+
+                if (slotInfo.players.length === 4) {
+                    const [p1, p2, p3, p4] = slotInfo.players;
+                    html += `
+                        <div class="court-arena" style="height: 120px; margin-bottom: 8px;">
+                            <div class="court-inner-border"></div>
+                            <div class="court-net"></div>
+                            <div class="player-pill-tag blue-1">🔵 ${p1}</div>
+                            <div class="player-pill-tag blue-2">🔵 ${p2}</div>
+                            <div class="player-pill-tag orange-1">${p3} 🟠</div>
+                            <div class="player-pill-tag orange-2">${p4} 🟠</div>
+                        </div>
+                    `;
+
+                    // Check if there's any free court available to deploy instantly
+                    let freeCourtId = Object.keys(courts).find(cid => courts[cid].status === 'Free');
+                    if (freeCourtId) {
+                        html += `<button class="btn-primary" style="margin-top: 4px;" onclick="deployNextGame(${slotId}, ${freeCourtId})">🚀 Deploy to Court ${freeCourtId}</button>`;
+                    } else {
+                        html += `<div style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; text-align: center;">Waiting for a court to become free...</div>`;
+                    }
+                    html += `<button class="btn-cancel" style="margin-top: 6px;" onclick="clearNextGameSlot(${slotId})">Clear Slot</button>`;
+                } else {
+                    html += `
+                        <div class="next-game-available" onclick="openAssignModal('nextslot', ${slotId})">
+                            <span style="font-size: 1.2rem; margin-bottom: 2px;">➕</span>
+                            <span>Click to Assign Match</span>
+                        </div>
+                    `;
+                }
+
+                html += `</div>`;
+                container.innerHTML += html;
+            }
+        }
+
+        function deployNextGame(slotId, courtId) {
+            let slot = nextGameSlots[slotId];
+            if (slot.players.length !== 4) return;
+
+            courts[courtId] = {
+                status: 'Playing',
+                players: slot.players,
+                mode: slot.mode
+            };
+
+            // Clear slot
+            nextGameSlots[slotId] = { players: [], mode: '' };
+
+            renderCourts();
+            renderNextGameSlots();
+            renderWaitingQueue();
+            if (adminLoggedIn) renderAdminSuite();
+        }
+
+        function clearNextGameSlot(slotId) {
+            let slot = nextGameSlots[slotId];
+            if (slot.players.length === 4) {
+                slot.players.forEach(name => {
+                    let p = players.find(x => x.Name === name);
+                    if (p && p.Status === 'In Queue') p.Status = 'Waiting';
+                });
+                nextGameSlots[slotId] = { players: [], mode: '' };
+                renderNextGameSlots();
+                renderWaitingQueue();
+            }
+        }
+
+        function openAssignModal(targetType, id) {
+            assignmentTargetType = targetType; // 'court' or 'nextslot'
+            selectedTargetId = id;
+            document.getElementById('assign-target-title').innerText = targetType === 'court' ? `Court ${id}` : `Next Game Queue #${id}`;
             document.getElementById('assign-modal').style.display = 'flex';
         }
 
         function closeAssignModal() {
-            selectedCourtId = null;
+            assignmentTargetType = null;
+            selectedTargetId = null;
             document.getElementById('assign-modal').style.display = 'none';
         }
 
@@ -1363,18 +1554,28 @@
             }
 
             let finalMatchPlayers = [selectedInitiator, ...selectedManualPlayers];
-            courts[selectedCourtId] = { status: 'Playing', players: finalMatchPlayers, mode: 'Manual' };
             
-            finalMatchPlayers.forEach(name => {
-                const p = players.find(x => x.Name === name);
-                if (p) p.Status = 'In Match';
-            });
+            if (assignmentTargetType === 'court') {
+                courts[selectedTargetId] = { status: 'Playing', players: finalMatchPlayers, mode: 'Manual' };
+                finalMatchPlayers.forEach(name => {
+                    const p = players.find(x => x.Name === name);
+                    if (p) p.Status = 'In Match';
+                });
+            } else {
+                nextGameSlots[selectedTargetId] = { players: finalMatchPlayers, mode: 'Manual' };
+                finalMatchPlayers.forEach(name => {
+                    const p = players.find(x => x.Name === name);
+                    if (p) p.Status = 'In Queue';
+                });
+            }
 
             document.getElementById('manual-modal').style.display = 'none';
-            selectedCourtId = null;
+            assignmentTargetType = null;
+            selectedTargetId = null;
             selectedInitiator = null;
             selectedManualPlayers = [];
             renderCourts();
+            renderNextGameSlots();
             renderWaitingQueue();
             if (adminLoggedIn) renderAdminSuite();
         }
@@ -1398,16 +1599,26 @@
             const chosenOthers = eligible.slice(0, 3).map(p => p.Name);
             const finalMatchPlayers = [selectedInitiator, ...chosenOthers];
 
-            courts[selectedCourtId] = { status: 'Playing', players: finalMatchPlayers, mode: algo };
-            finalMatchPlayers.forEach(name => {
-                const p = players.find(x => x.Name === name);
-                if (p) p.Status = 'In Match';
-            });
+            if (assignmentTargetType === 'court') {
+                courts[selectedTargetId] = { status: 'Playing', players: finalMatchPlayers, mode: algo };
+                finalMatchPlayers.forEach(name => {
+                    const p = players.find(x => x.Name === name);
+                    if (p) p.Status = 'In Match';
+                });
+            } else {
+                nextGameSlots[selectedTargetId] = { players: finalMatchPlayers, mode: algo };
+                finalMatchPlayers.forEach(name => {
+                    const p = players.find(x => x.Name === name);
+                    if (p) p.Status = 'In Queue';
+                });
+            }
 
             document.getElementById('auto-modal').style.display = 'none';
-            selectedCourtId = null;
+            assignmentTargetType = null;
+            selectedTargetId = null;
             selectedInitiator = null;
             renderCourts();
+            renderNextGameSlots();
             renderWaitingQueue();
             if (adminLoggedIn) renderAdminSuite();
         }
@@ -1444,8 +1655,15 @@
             courts[activeEndingCourtId] = { status: 'Free', players: [], mode: '' };
             closeWinnerModal();
             renderCourts();
+            renderNextGameSlots();
             renderWaitingQueue();
             if (adminLoggedIn) renderAdminSuite();
+
+            // Auto-deploy ready next game slot if available
+            let readySlotId = Object.keys(nextGameSlots).find(sid => nextGameSlots[sid].players.length === 4);
+            if (readySlotId) {
+                deployNextGame(readySlotId, activeEndingCourtId);
+            }
         }
 
         function renderWaitingQueue() {
@@ -1482,7 +1700,7 @@
             theadTr.innerHTML = headerHtml;
 
             const query = document.getElementById('queue-search').value.toLowerCase();
-            let waiting = players.filter(p => p.CheckedIn && p.Status === 'Waiting');
+            let waiting = players.filter(p => p.CheckedIn && (p.Status === 'Waiting' || p.Status === 'In Queue'));
             if (query) {
                 waiting = waiting.filter(p => p.Name.toLowerCase().includes(query));
             }
@@ -1490,7 +1708,7 @@
 
             waiting.forEach(p => {
                 let rowHtml = '';
-                if (showName) rowHtml += `<td><strong>${p.Name}</strong></td>`;
+                if (showName) rowHtml += `<td><strong>${p.Name}</strong> ${p.Status === 'In Queue' ? '<span style="font-size:0.7rem; color:var(--accent-amber);">(Next Game)</span>' : ''}</td>`;
                 if (showType) rowHtml += `<td>${p.Type}</td>`;
                 if (showSkill) rowHtml += `<td>${p.Skill}</td>`;
                 if (showGames) rowHtml += `<td>${p.GamesPlayed}</td>`;
@@ -1521,6 +1739,7 @@
 
         function toggleCheckin(idx) {
             players[idx].CheckedIn = !players[idx].CheckedIn;
+            renderNextGameSlots();
             renderWaitingQueue();
             renderCheckinPanel();
             if (adminLoggedIn) renderAdminSuite();
@@ -1699,6 +1918,7 @@
                 players.push({ Name: name, Type: type, Skill: skill, GamesPlayed: 0, Status: 'Waiting', CheckedIn: true, Paid: false });
                 alert(`Successfully registered ${name}!`);
                 document.getElementById('new-p-name').value = '';
+                renderNextGameSlots();
                 renderAdminSuite();
                 renderWaitingQueue();
                 renderCheckinPanel();
